@@ -11,7 +11,12 @@ setup(
     description="A middleware for FastAPI applications that tracks and exposes Prometheus metrics",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/yourusername/fastapi-prometheus-middleware",
+    url="https://github.com/ushankradadiya/fastapi-prometheus-middleware",
+    project_urls={
+        "Bug Tracker": "https://github.com/ushankradadiya/fastapi-prometheus-middleware/issues",
+        "Documentation": "https://github.com/ushankradadiya/fastapi-prometheus-middleware#readme",
+        "Source Code": "https://github.com/ushankradadiya/fastapi-prometheus-middleware",
+    },
     packages=find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",
