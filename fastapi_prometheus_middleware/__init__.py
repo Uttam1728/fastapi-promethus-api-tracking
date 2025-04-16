@@ -5,23 +5,16 @@ A middleware for FastAPI applications that tracks and exposes Prometheus metrics
 """
 
 from fastapi_prometheus_middleware.middleware import PrometheusMiddleware
-from fastapi_prometheus_middleware.metrics import (
-    track_request_started,
-    track_request_completed,
-    track_request_error,
-    track_request_finished,
-    track_token_usage,
-    metrics_endpoint
-)
+from fastapi_prometheus_middleware.metrics import metrics_endpoint, APIMetrics
 from fastapi_prometheus_middleware.exception_tracker import (
     track_detailed_exception,
     track_global_exception
 )
-from fastapi_prometheus_middleware.streaming_metrics import (
-    track_stream_started,
-    track_stream_chunk,
-    track_stream_finished,
-    track_stream_error
+from fastapi_prometheus_middleware.streaming_metrics import StreamingMetrics
+from fastapi_prometheus_middleware.metrics_registry import (
+    register_metrics,
+    get_metrics,
+    get_all_metrics
 )
 from fastapi_prometheus_middleware.streaming_wrapper import (
     StreamingMetricsWrapper,

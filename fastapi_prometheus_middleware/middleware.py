@@ -23,13 +23,9 @@ from starlette.types import ASGIApp
 from starlette.responses import StreamingResponse
 
 from fastapi_prometheus_middleware.context import token_usage_context
-from fastapi_prometheus_middleware.metrics import (
-    track_request_started,
-    track_request_completed,
-    track_request_error,
-    track_request_finished,
-    track_token_usage
-)
+from fastapi_prometheus_middleware.metrics import APIMetrics
+from fastapi_prometheus_middleware.streaming_metrics import StreamingMetrics
+from fastapi_prometheus_middleware.metrics_registry import register_metrics
 from fastapi_prometheus_middleware.exception_tracker import track_detailed_exception
 
 class UserData(BaseModel):
@@ -86,6 +82,14 @@ class PrometheusMiddleware(BaseHTTPMiddleware):
         self.prefix = prefix
         self.skip_paths = skip_paths or ["/metrics", "/_readyz", "/_healthz"]
         self.logger = logger
+
+        # Create metrics instances with the correct prefix
+        self.api_metrics = APIMetrics(prefix=prefix)
+        self.streaming_metrics = StreamingMetrics(prefix=prefix)
+
+        # Register metrics instances in the registry
+        register_metrics('api_metrics', self.api_metrics)
+        register_metrics('streaming_metrics', self.streaming_metrics)
 
     async def process_request_data(self, request: Request) -> Dict[str, Any]:
         """
@@ -254,7 +258,7 @@ class PrometheusMiddleware(BaseHTTPMiddleware):
         
         # Track request start
         request_body_size = len(request_data.get('request_body', b''))
-        track_request_started(request, request_body_size)
+        self.api_metrics.track_request_started(request, request_body_size)
 
         try:
             self.process_request_headers(request, request_data)
@@ -264,24 +268,25 @@ class PrometheusMiddleware(BaseHTTPMiddleware):
 
             # Track successful completion
             duration = time.perf_counter() - start_time
-            track_request_completed(request, response, duration)
-            
+            self.api_metrics.track_request_completed(request, response, duration)
+
             return response
 
         except Exception as exc:
             duration = time.perf_counter() - start_time
             status_code = getattr(exc, 'status_code', 500)
-            track_request_error(request, status_code, type(exc).__name__, duration)
-            track_detailed_exception(exc, status_code)
+            self.api_metrics.track_request_error(request, status_code, type(exc).__name__, duration)
+            # Use our metrics instance for tracking exceptions
+            self.api_metrics.track_exception(exc, status_code)
             return await self.handle_exception(request, request_data, exc, status_code, start_time)
 
         finally:
-            track_request_finished(request)
+            self.api_metrics.track_request_finished(request)
 
             # Track token usage
             token_data = token_usage_context.get()
             if token_data["total_tokens"] > 0:
-                track_token_usage(
+                self.api_metrics.track_token_usage(
                     input_tokens=token_data["input_tokens"],
                     output_tokens=token_data["output_tokens"],
                     total_tokens=token_data["total_tokens"]

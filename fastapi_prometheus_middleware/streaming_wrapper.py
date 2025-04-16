@@ -9,12 +9,8 @@ import inspect
 import logging
 from typing import AsyncGenerator, Any, Optional, Callable, Union
 
-from fastapi_prometheus_middleware.streaming_metrics import (
-    track_stream_started,
-    track_stream_chunk,
-    track_stream_finished,
-    track_stream_error
-)
+from fastapi_prometheus_middleware.streaming_metrics import StreamingMetrics
+from fastapi_prometheus_middleware.metrics_registry import get_metrics
 
 # Set up logging
 logger = logging.getLogger(__name__)
@@ -43,8 +39,15 @@ class StreamingMetricsWrapper:
         self.endpoint = endpoint or self._get_caller_endpoint()
         self.start_time = time.time()
 
+        # Get the streaming metrics instance from the registry
+        self.metrics = get_metrics('streaming_metrics')
+        if not self.metrics:
+            # Fallback to a new instance if not found in registry
+            self.metrics = StreamingMetrics()
+            logger.warning("No streaming metrics found in registry, using default instance")
+
         # Track stream start
-        track_stream_started(self.endpoint)
+        self.metrics.track_stream_started(self.endpoint)
 
     def _get_caller_endpoint(self) -> str:
         """
@@ -80,14 +83,14 @@ class StreamingMetricsWrapper:
             async for chunk in self.generator:
                 # Track the chunk
                 chunk_size = len(chunk) if isinstance(chunk, (str, bytes)) else 1
-                track_stream_chunk(self.endpoint, chunk_size)
+                self.metrics.track_stream_chunk(self.endpoint, chunk_size)
 
                 # Yield the chunk
                 yield chunk
         except Exception as e:
             # Track the error
             error_type = type(e).__name__
-            track_stream_error(self.endpoint, error_type)
+            self.metrics.track_stream_error(self.endpoint, error_type)
 
             # Re-raise the exception
             logger.error(f"Error in streaming response: {e}")
@@ -95,7 +98,7 @@ class StreamingMetricsWrapper:
         finally:
             # Track stream end
             duration = time.time() - self.start_time
-            track_stream_finished(self.endpoint, duration)
+            self.metrics.track_stream_finished(self.endpoint, duration)
 
 
 def wrap_streaming_response(generator, endpoint: Optional[str] = None) -> AsyncGenerator:
@@ -162,26 +165,33 @@ async def track_streaming_generator(
     Yields:
         The chunks from the wrapped generator
     """
+    # Get the streaming metrics instance from the registry
+    metrics = get_metrics('streaming_metrics')
+    if not metrics:
+        # Fallback to a new instance if not found in registry
+        metrics = StreamingMetrics()
+        logger.warning("No streaming metrics found in registry, using default instance")
+
     # Track stream start
-    track_stream_started(endpoint)
+    metrics.track_stream_started(endpoint)
     start_time = time.time()
 
     try:
         async for chunk in generator:
             # Track the chunk
             chunk_size = len(chunk) if isinstance(chunk, (str, bytes)) else 1
-            track_stream_chunk(endpoint, chunk_size)
+            metrics.track_stream_chunk(endpoint, chunk_size)
 
             # Yield the chunk
             yield chunk
     except Exception as e:
         # Track the error
         error_type = type(e).__name__
-        track_stream_error(endpoint, error_type)
+        metrics.track_stream_error(endpoint, error_type)
 
         # Re-raise the exception
         raise
     finally:
         # Track stream end
         duration = time.time() - start_time
-        track_stream_finished(endpoint, duration)
+        metrics.track_stream_finished(endpoint, duration)

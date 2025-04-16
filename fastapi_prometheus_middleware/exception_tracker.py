@@ -9,7 +9,8 @@ import inspect
 import traceback
 from typing import Optional
 
-from fastapi_prometheus_middleware.metrics import track_exception, increment_global_exceptions
+from fastapi_prometheus_middleware.metrics import APIMetrics
+from fastapi_prometheus_middleware.metrics_registry import get_metrics
 
 # Set up logging
 logger = logging.getLogger(__name__)
@@ -29,7 +30,14 @@ def track_global_exception():
             track_global_exception()
             # Handle the exception
     """
-    increment_global_exceptions()
+    # Get the API metrics instance from the registry
+    metrics = get_metrics('api_metrics')
+    if not metrics:
+        # Fallback to a new instance if not found in registry
+        metrics = APIMetrics()
+        logger.warning("No API metrics found in registry, using default instance")
+
+    metrics.increment_global_exceptions()
 
 
 def track_detailed_exception(exception: Exception, status_code: Optional[int] = None):
@@ -51,9 +59,16 @@ def track_detailed_exception(exception: Exception, status_code: Optional[int] = 
             # Handle the exception
     """
     try:
+        # Get the API metrics instance from the registry
+        metrics = get_metrics('api_metrics')
+        if not metrics:
+            # Fallback to a new instance if not found in registry
+            metrics = APIMetrics()
+            logger.warning("No API metrics found in registry, using default instance")
+
         # Track the exception with detailed information
-        track_exception(exception, status_code)
-        
+        metrics.track_exception(exception, status_code)
+
         # Log the exception with traceback
         logger.error(
             f"Exception: {type(exception).__name__}: {str(exception)}",

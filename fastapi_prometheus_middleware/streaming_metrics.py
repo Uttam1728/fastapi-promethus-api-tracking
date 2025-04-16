@@ -226,12 +226,3 @@ class StreamingMetrics:
         except Exception as e:
             logger.warning(f"Error tracking stream error: {e}")
 
-
-# Create a singleton instance for easy import
-streaming_metrics = StreamingMetrics()
-
-# Export the instance methods as module-level functions for backward compatibility
-track_stream_started = streaming_metrics.track_stream_started
-track_stream_chunk = streaming_metrics.track_stream_chunk
-track_stream_finished = streaming_metrics.track_stream_finished
-track_stream_error = streaming_metrics.track_stream_error

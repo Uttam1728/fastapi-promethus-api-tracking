@@ -374,19 +374,6 @@ class APIMetrics:
             logger.warning(f"Error incrementing global exception counter: {e}")
 
 
-# Create a singleton instance for easy import
-api_metrics = APIMetrics()
-
-# Export the instance methods as module-level functions for backward compatibility
-track_request_started = api_metrics.track_request_started
-track_request_completed = api_metrics.track_request_completed
-track_request_error = api_metrics.track_request_error
-track_request_finished = api_metrics.track_request_finished
-track_token_usage = api_metrics.track_token_usage
-track_exception = api_metrics.track_exception
-increment_global_exceptions = api_metrics.increment_global_exceptions
-
-
 async def metrics_endpoint(request=None):
     """
     Endpoint for exposing Prometheus metrics.

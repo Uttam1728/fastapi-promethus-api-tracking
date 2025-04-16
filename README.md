@@ -44,7 +44,7 @@ from fastapi_prometheus_middleware import PrometheusMiddleware, metrics_endpoint
 
 app = FastAPI()
 
-# Add the Prometheus middleware
+# Add the Prometheus middleware with default prefix 'fastapi'
 app.add_middleware(PrometheusMiddleware)
 
 # Add the metrics endpoint
@@ -164,6 +164,29 @@ async def write_metrics_to_file():
 async def startup_event():
     asyncio.create_task(write_metrics_to_file())
 ```
+
+### Custom Prefix Example
+
+You can customize the prefix used for all metrics. This is useful when you want to distinguish metrics from different applications:
+
+```python
+from fastapi import FastAPI
+from fastapi_prometheus_middleware import PrometheusMiddleware, metrics_endpoint
+
+app = FastAPI()
+
+# Add the Prometheus middleware with a custom prefix
+app.add_middleware(
+    PrometheusMiddleware,
+    prefix="myapp",  # Custom prefix for all metrics
+    skip_paths=["/metrics", "/health"],
+)
+
+# Add the metrics endpoint
+app.add_route('/metrics', metrics_endpoint)
+```
+
+See the full example in [examples/custom_prefix_example.py](examples/custom_prefix_example.py).
 
 ## Available Metrics
 
