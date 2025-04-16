@@ -7,15 +7,14 @@ setup(
     name="fastapi-prometheus-middleware",
     version="0.1.0",
     author="Ushank Radadiya",
-    author_email="ushankradadiya@gofynd.com",
+    author_email="ushankradadiya1728@gmail.com",
     description="A middleware for FastAPI applications that tracks and exposes Prometheus metrics",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/ushankradadiya/fastapi-prometheus-middleware",
+    url="https://github.com/Uttam1728/fastapi-promethus-api-tracking/",
     project_urls={
-        "Bug Tracker": "https://github.com/ushankradadiya/fastapi-prometheus-middleware/issues",
-        "Documentation": "https://github.com/ushankradadiya/fastapi-prometheus-middleware#readme",
-        "Source Code": "https://github.com/ushankradadiya/fastapi-prometheus-middleware",
+        "Documentation": "https://github.com/Uttam1728/fastapi-promethus-api-tracking/blob/main/README.md",
+        "Source Code": "https://github.com/Uttam1728/fastapi-promethus-api-tracking/tree/main/fastapi_prometheus_middleware",
     },
     packages=find_packages(),
     classifiers=[
@@ -24,7 +23,7 @@ setup(
         "Operating System :: OS Independent",
         "Framework :: FastAPI",
     ],
-    python_requires=">=3.7",
+    python_requires=">=3.10",
     install_requires=[
         "fastapi>=0.115.3",
         "prometheus-client>=0.3.0",
