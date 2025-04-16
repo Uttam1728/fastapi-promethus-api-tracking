@@ -14,9 +14,25 @@ A middleware for FastAPI applications that tracks and exposes Prometheus metrics
 
 ## Installation
 
+### From GitHub (recommended)
+
+Add to your requirements.txt:
+```
+git+https://github.com/ushankradadiya/fastapi-prometheus-middleware.git
+```
+
+Or install directly with pip:
+```bash
+pip install git+https://github.com/ushankradadiya/fastapi-prometheus-middleware.git
+```
+
+### From PyPI (once published)
+
 ```bash
 pip install fastapi-prometheus-middleware
 ```
+
+See [INSTALL.md](INSTALL.md) for more installation options.
 
 ## Usage
 
@@ -41,7 +57,7 @@ app.add_route('/metrics', metrics_endpoint)
 from fastapi import FastAPI
 import logging
 from fastapi_prometheus_middleware import (
-    PrometheusMiddleware, 
+    PrometheusMiddleware,
     metrics_endpoint,
     track_detailed_exception,
     track_global_exception
@@ -68,14 +84,14 @@ app.add_route('/metrics', metrics_endpoint)
 @app.post("/generate")
 async def generate_text(prompt: str):
     # Your LLM code here
-    
+
     # Track token usage
     token_data = token_usage_context.get()
     token_data["input_tokens"] = 10  # Replace with actual values
     token_data["output_tokens"] = 20  # Replace with actual values
     token_data["total_tokens"] = 30  # Replace with actual values
     token_usage_context.set(token_data)
-    
+
     return {"text": "Generated text"}
 
 # Track exceptions
@@ -95,7 +111,7 @@ async def risky_operation():
 ```python
 from fastapi import FastAPI
 from fastapi_prometheus_middleware import (
-    PrometheusMiddleware, 
+    PrometheusMiddleware,
     metrics_endpoint,
     wrap_streaming_response,
     streaming_response_decorator
@@ -112,10 +128,10 @@ async def stream_data():
         for i in range(10):
             yield f"data: {i}\n\n"
             await asyncio.sleep(0.1)
-    
+
     # Wrap the generator with metrics tracking
     tracked_generator = wrap_streaming_response(generator(), endpoint="/stream")
-    
+
     return StreamingResponse(tracked_generator, media_type="text/event-stream")
 
 # Option 2: Use the decorator

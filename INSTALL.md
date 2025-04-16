@@ -1,5 +1,27 @@
 # Installation Guide
 
+## Installing from GitHub using requirements.txt
+
+To install the package directly from GitHub, add the following line to your requirements.txt file:
+
+```
+git+https://github.com/ushankradadiya/fastapi-prometheus-middleware.git
+```
+
+Then run:
+
+```bash
+pip install -r requirements.txt
+```
+
+## Installing from GitHub using pip
+
+You can also install the package directly using pip:
+
+```bash
+pip install git+https://github.com/ushankradadiya/fastapi-prometheus-middleware.git
+```
+
 ## Installing from PyPI
 
 Once the package is published to PyPI, you can install it using pip:
@@ -14,7 +36,7 @@ To install the package from source:
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/fastapi-prometheus-middleware.git
+   git clone https://github.com/ushankradadiya/fastapi-prometheus-middleware.git
    cd fastapi-prometheus-middleware
    ```
 
