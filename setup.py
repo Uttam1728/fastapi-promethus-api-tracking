@@ -26,9 +26,9 @@ setup(
     ],
     python_requires=">=3.7",
     install_requires=[
-        "fastapi>=0.68.0",
-        "prometheus-client>=0.12.0",
-        "starlette>=0.14.2",
-        "orjson>=3.6.0",
+        "fastapi>=0.115.3",
+        "prometheus-client>=0.3.0",
+        "starlette>=0.41.3",
+        "orjson>=3.9.15",
     ],
 )
