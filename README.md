@@ -18,12 +18,12 @@ A middleware for FastAPI applications that tracks and exposes Prometheus metrics
 
 Add to your requirements.txt:
 ```
-git+https://github.com/ushankradadiya/fastapi-prometheus-middleware.git
+git+https://github.com/ushankradadiya/fastapi-prometheus-middleware.git@main
 ```
 
 Or install directly with pip:
 ```bash
-pip install git+https://github.com/ushankradadiya/fastapi-prometheus-middleware.git
+pip install git+https://github.com/ushankradadiya/fastapi-prometheus-middleware.git@main
 ```
 
 ### From PyPI (once published)

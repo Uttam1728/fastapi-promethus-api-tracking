@@ -5,7 +5,7 @@
 To install the package directly from GitHub, add the following line to your requirements.txt file:
 
 ```
-git+https://github.com/ushankradadiya/fastapi-prometheus-middleware.git
+git+https://github.com/ushankradadiya/fastapi-prometheus-middleware.git@main
 ```
 
 Then run:
@@ -19,7 +19,7 @@ pip install -r requirements.txt
 You can also install the package directly using pip:
 
 ```bash
-pip install git+https://github.com/ushankradadiya/fastapi-prometheus-middleware.git
+pip install git+https://github.com/ushankradadiya/fastapi-prometheus-middleware.git@main
 ```
 
 ## Installing from PyPI
