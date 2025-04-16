@@ -6,7 +6,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 setup(
     name="fastapi-prometheus-middleware",
     version="0.1.0",
-    author="Ushank Radadiya",
+    author="Ushank Radadiy",
     author_email="ushankradadiya1728@gmail.com",
     description="A middleware for FastAPI applications that tracks and exposes Prometheus metrics",
     long_description=long_description,
