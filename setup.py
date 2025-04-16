@@ -29,6 +29,6 @@ setup(
         "prometheus-client>=0.3.0",
         "starlette>=0.41.3",
         "orjson>=3.9.15",
-        "pydantic>=2.11.3"
+        "pydantic>=1.10.12"
     ],
 )
