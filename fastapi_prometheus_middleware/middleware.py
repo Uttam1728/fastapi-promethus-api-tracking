@@ -3,9 +3,12 @@ Prometheus middleware for FastAPI applications.
 
 This module provides a middleware that tracks request metrics using Prometheus.
 """
-
+import datetime
 import time
+import typing
 from typing import Callable, List, Optional, Dict, Any
+
+from pydantic import BaseModel, Field
 
 try:
     import orjson
@@ -28,6 +31,22 @@ from fastapi_prometheus_middleware.metrics import (
     track_token_usage
 )
 from fastapi_prometheus_middleware.exception_tracker import track_detailed_exception
+
+class UserData(BaseModel):
+    userId: int = Field(..., alias="_id")
+    orgId: typing.Optional[int] = None
+    firstName: typing.Optional[str]
+    lastName: typing.Optional[str]
+    email: typing.Optional[str]
+    username: typing.Optional[str]
+    phoneNumber: typing.Optional[str]
+    profilePicUrl: typing.Optional[str]
+    active: typing.Optional[bool]
+    roleIds: typing.Optional[list[int]]
+    meta: typing.Optional[dict]
+    createdAt: typing.Optional[datetime]
+    updatedAt: typing.Optional[datetime]
+    workspace: typing.List[typing.Dict]
 
 
 class PrometheusMiddleware(BaseHTTPMiddleware):
@@ -105,6 +124,9 @@ class PrometheusMiddleware(BaseHTTPMiddleware):
                 if request_data['request_body'] and not content_type.startswith("multipart/form-data")
                 else {}
             )
+            if x_user_data := request.headers.get("x-user-data"):
+                request.state.user_data = UserData.construct(**orjson.loads(x_user_data))
+
         except (ValueError, TypeError):
             request_data['request_body'] = {}
 
