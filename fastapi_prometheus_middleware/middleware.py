@@ -3,7 +3,7 @@ Prometheus middleware for FastAPI applications.
 
 This module provides a middleware that tracks request metrics using Prometheus.
 """
-import datetime
+from datetime import datetime
 import time
 import typing
 from typing import Callable, List, Optional, Dict, Any
