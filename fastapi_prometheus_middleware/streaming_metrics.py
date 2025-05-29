@@ -83,7 +83,7 @@ class StreamingMetrics:
         except ValueError:
             # If it already exists, try to get it from the registry
             for metric in REGISTRY._names_to_collectors.values():
-                if metric.name == name:
+                if hasattr(metric, 'name') and metric.name == name:
                     return metric
             # If we can't find it, create a new one with a different name
             return Counter(f"{name}_new", documentation, labelnames or [])
@@ -107,7 +107,7 @@ class StreamingMetrics:
         except ValueError:
             # If it already exists, try to get it from the registry
             for metric in REGISTRY._names_to_collectors.values():
-                if metric.name == name:
+                if hasattr(metric, 'name') and metric.name == name:
                     return metric
             # If we can't find it, create a new one with a different name
             return Histogram(f"{name}_new", documentation, labelnames or [], buckets=buckets)
@@ -130,7 +130,7 @@ class StreamingMetrics:
         except ValueError:
             # If it already exists, try to get it from the registry
             for metric in REGISTRY._names_to_collectors.values():
-                if metric.name == name:
+                if hasattr(metric, 'name') and metric.name == name:
                     return metric
             # If we can't find it, create a new one with a different name
             return Gauge(f"{name}_new", documentation, labelnames or [])
